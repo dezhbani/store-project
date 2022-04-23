@@ -20,7 +20,7 @@ module.exports = class Application{
     configApplication(){
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
-        this.#app.use(express.static(path.join()));
+        this.#app.use(express.static(path.join(__dirname, "..", "public")));
     }
     createServer(){
         http.createServer(this.#app).listen(this.#PORT, () => {
