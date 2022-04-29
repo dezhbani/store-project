@@ -1,0 +1,25 @@
+{
+  "name": "store-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon node inde.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "auto-bind": "^4.0.0",
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.3",
+    "http-errors": "^2.0.0",
+    "mongoose": "^6.3.1",
+    "morgan": "^1.10.0",
+    "request": "^2.88.2",
+    "supervisor": "^0.12.0",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.3.0"
+  }
+}
