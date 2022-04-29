@@ -1,29 +1,46 @@
 const createError = require("http-errors");
+const { sendSMS } = require("../../../../../app");
+const { EXPIRES_IN, ROLES } = require("../../../../utils/constant");
 const { randomNumber } = require("../../../../utils/function");
 const { userModel } = require("../../../models/user");
 const { authSchema } = require("../../../validations/user/auth.schema");
+const { Controllers } = require("../../controllers");
 
-class userAuthControllers{
+class userAuthControllers extends Controllers{
     async login(req, res, next) {
         try {
-            const result = await authSchema.validateAsync(req.body)
+            await authSchema.validateAsync(req.body)
             const { mobile } = req.body;
-            const code = randomNumber()
-            return res.status(200).send("ورود شما با موفقیت انجام شد");
+            const code = randomNumber();
+            const result = await this.saveUser(mobile, code)
+            if(!result) throw createError.Unauthorized("ورود شما انجام نشد")
+            // const sendResult = await sendSMS(mobile, code)
+            // console.log(sendResult )
+            // if(!sendResult) throw createError.Unauthorized("کد تایید ارسال نشد")
+            return res.status(200).send({
+                data: {
+                    status: 200,
+                    message: "کد تایید ارسال شد",
+                    code,
+                    mobile
+                }
+            });
         } catch (error) {
             next(createError.BadRequest(error.message));
         }
     }
     async saveUser(mobile, code){
-        const result = await this.checkExistUser(mobile);
-        if(result){
-            return (await this.updateUser(mobile, {
-                otp: {
-                    code,
-                    ex
-                }
-            }))
+        let otp = {
+            code,
+            expireIn: EXPIRES_IN
         }
+        const result = await this.checkExistUser(mobile);
+        if(result) return (await this.updateUser(mobile, {otp}))
+        return !!(await userModel.create({
+            mobile,
+            otp, 
+            roles: [ROLES]
+        }))
     }
     async checkExistUser(mobile){
         const user = await userModel.findOne({mobile});
