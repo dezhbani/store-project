@@ -6,7 +6,6 @@ const Schema = new mongoose.Schema({
     username: {type: String},
     eamail: {type: String},
     mobile: {type: String},
-    phone: {type: String},
     password: {type: String},
     otp: {type: Object, default: {
         code: 0,
