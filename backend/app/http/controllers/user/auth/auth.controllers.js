@@ -1,7 +1,7 @@
 const createError = require("http-errors");
 // const { sendSMS } = require("../../../..");
-const { EXPIRES_IN, ROLES } = require("../../../../utils/constant");
-const { randomNumber, signAccessToken } = require("../../../../utils/function");
+const { ROLES } = require("../../../../utils/constant");
+const { randomNumber, signAccessToken, verifyRefreshToken, signRefreshToken } = require("../../../../utils/function");
 const { userModel } = require("../../../models/user");
 const { checkOtpSchema, getOtpSchema } = require("../../../validations/user/auth.schema");
 const { Controllers } = require("../../controllers");
@@ -26,21 +26,9 @@ class userAuthControllers extends Controllers{
                 }
             });
         } catch (error) {
+            console.log(error)
             next(createError.BadRequest(error.message));
         }
-    }
-    async saveUser(mobile, code){
-        let otp = {
-            code,
-            expireIn: EXPIRES_IN
-        }
-        const result = await this.checkExistUser(mobile);
-        if(result) return (await this.updateUser(mobile, {otp}))
-        return !!(await userModel.create({
-            mobile,
-            otp, 
-            roles: [ROLES]
-        }))
     }
     async checkOTP(req, res, next){
         try {
@@ -52,13 +40,45 @@ class userAuthControllers extends Controllers{
             const now = Date.now();
             if(+user.otp.expireIn < +now) throw createError.Unauthorized("کد تایید منقضی شده");
             const accessToken = await signAccessToken(user._id);
+            const refreshToken = await signRefreshToken(user._id);
             return res.json({
-                accessToken
+                accessToken,
+                refreshToken
             })
         } catch (error) {
             console.log(error)
             next(error)
         }
+    }
+    async refreshToken(req, res, next){
+        try {
+            const { refreshToken } = req.body;
+            const mobile = await verifyRefreshToken(refreshToken);
+            const user = await userModel.findOne({mobile});
+            const accessToken = await signAccessToken(user._id);
+            const newRefreshToken = await signRefreshToken(user._id);
+            return res.json({
+                data: {
+                    accessToken,
+                    refreshToken: newRefreshToken
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    async saveUser(mobile, code){
+        let otp = {
+            code,
+            expireIn: (new Date().getTime() + 120000)
+        }
+        const result = await this.checkExistUser(mobile);
+        if(result) return (await this.updateUser(mobile, {otp}))
+        return !!(await userModel.create({
+            mobile,
+            otp, 
+            roles: [ROLES.USER]
+        }))
     }
     async checkExistUser(mobile){
         const user = await userModel.findOne({mobile});
