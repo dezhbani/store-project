@@ -46,5 +46,5 @@ router.get("/random-number", (req, res, next) =>{
 })
 
 module.exports = {
-    DeveloperRoute: router
+    DeveloperRoutes: router
 }
