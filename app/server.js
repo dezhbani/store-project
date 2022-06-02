@@ -51,7 +51,7 @@ module.exports = class Application{
     }
     createServer(){
         http.createServer(this.#app).listen(this.#PORT, () => {
-            console.log(`run => http://localhost:${this.#PORT}`);
+            console.log(`run => http://localhost:${this.#PORT}/api-doc`);
         })
     }
     connectToDB(){
@@ -78,11 +78,12 @@ module.exports = class Application{
         this.#app.use(AllRoutes)
     }
     errorHandling(){
-        this.#app.use((req, res, nex) => {
-            next(createError.NotFound("آدرس مورد نظر یافت نشد"))
+        this.#app.use((req, res, next) => {
+                next(createError.NotFound("آدرس مورد نظر یافت نشد"))
         })
         this.#app.use((err, req, res, next) =>{
             const serverError = createError.InternalServerError("InternalServerError")
+            console.log(err)
             const status = err.status || serverError.status;
             const message = err.message || serverError.message;
             return res.status(status).json({
