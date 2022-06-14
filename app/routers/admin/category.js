@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const categoryController = require("../../http/controllers/admin/category.controller");
 const { CategoryController } = require("../../http/controllers/admin/category.controller");
+
+
 /**
  * @swagger
  *  /admin/category/add:
@@ -21,6 +22,8 @@ const { CategoryController } = require("../../http/controllers/admin/category.co
  *                  description: success
  */
 router.post("/add", CategoryController.addCategory)
+
+
 /**
  * @swagger
  *  /admin/category/parents:
@@ -32,6 +35,8 @@ router.post("/add", CategoryController.addCategory)
  *                  description: success
  */
 router.get("/parents", CategoryController.geAllParents)
+
+
 /**
  * @swagger
  *  /admin/category/children/{parent}:
@@ -48,6 +53,8 @@ router.get("/parents", CategoryController.geAllParents)
  *                  description: success
  */
 router.get("/children/:parent", CategoryController.geChildrenOfParents)
+
+
 /**
  * @swagger
  *  /admin/category/all:
@@ -58,8 +65,31 @@ router.get("/children/:parent", CategoryController.geChildrenOfParents)
  *              200:
  *                  description: success
  */
-
 router.get("/all", CategoryController.getAllCategory)
+
+
+/**
+ * @swagger
+ *  /admin/category/edit/{id}:
+ *      patch:
+ *          tags: [admin-panel]
+ *          summary: edit category title with Object id
+ *          parameters:
+ *              -   in: path
+ *                  type: string
+ *                  required: true
+ *                  name: id
+ *              -   in: formData
+ *                  type: string
+ *                  required: true
+ *                  name: title
+ *          responses:
+ *              200:
+ *                  description: success
+ */
+router.patch("/edit/:id", CategoryController.editCategory)
+
+
 /**
  * @swagger
  *  /admin/category/remove/{id}:
@@ -77,6 +107,24 @@ router.get("/all", CategoryController.getAllCategory)
  */
 
 router.delete("/remove/:id", CategoryController.removeCategory)
+
+
+/**
+ * @swagger
+ *  /admin/category/{id}:
+ *      get:
+ *          tags: [admin-panel]
+ *          summary: get category by Object-id
+ *          parameters:
+ *              -   in: path
+ *                  type: string
+ *                  required: true
+ *                  name: id
+ *          responses:
+ *              200:
+ *                  description: success
+ */
+router.get("/:id", CategoryController.getCategoryById)
 
 module.exports = {
     categoryRoutes: router
