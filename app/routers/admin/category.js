@@ -1,6 +1,22 @@
 const router = require("express").Router();
 const { CategoryController } = require("../../http/controllers/admin/category.controller");
 
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          Category:
+ *              type: object
+ *              required:
+ *                  -   title
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of category
+ *                  parent:
+ *                      type: string
+ *                      description: the parent of category
+ */
 
 /**
  * @swagger
@@ -8,15 +24,12 @@ const { CategoryController } = require("../../http/controllers/admin/category.co
  *      post:
  *          tags: [Category(admin-panel)]
  *          summary: create new category title
- *          parameters:
- *              -   in: formData
- *                  type: string
- *                  required: true
- *                  name: title
- *              -   in: formData
- *                  type: string
- *                  required: false
- *                  name: parents
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
  *          responses:
  *              201:
  *                  description: success
@@ -79,10 +92,12 @@ router.get("/all", CategoryController.getAllCategory)
  *                  type: string
  *                  required: true
  *                  name: id
- *              -   in: formData
- *                  type: string
- *                  required: true
- *                  name: title
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Category'
  *          responses:
  *              200:
  *                  description: success
@@ -116,6 +131,7 @@ router.delete("/remove/:id", CategoryController.removeCategory)
  *          tags: [Category(admin-panel)]
  *          summary: get category by Object-id
  *          parameters:
+
  *              -   in: path
  *                  type: string
  *                  required: true

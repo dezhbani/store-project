@@ -31,23 +31,37 @@ module.exports = class Application{
         this.#app.use(express.static(path.join(__dirname, "..", "public")));  
         this.#app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJS({
             swaggerDefinition: {
-                info:{
-                    title: "Store Project",
-                    version: "1.0.0",
-                    description: "پروژه فروش محصولات",
-                    contact: {
-                        name: "Matin Dezhbani",
-                        email: "dezhbanimatin@gmail.com"
-                      }
-                },
-                servers:[
-                    {
-                        url: "http://localhost:1000"
-                    }
-                ]
-            },
-            apis: ["./app/routers/**/*.js"]
-        })))
+                        openapi: "3.0.0",
+                        info:{
+                            title: "Store Project",
+                            version: "2.0.0",
+                            description: "پروژه فروش محصولات",
+                            contact: {
+                                name: "Matin Dezhbani",
+                                email: "dezhbanimatin@gmail.com"
+                            }
+                        },
+                        servers:[
+                            {
+                                url: "http://localhost:2000"
+                            }
+                        ],
+                        components: {
+                            securitySchemes:{
+                                BearerAuth:{
+                                    type: "http",
+                                    scheme: "bearer",
+                                    bearerFormat: "JWT"
+                                }
+                            }
+                        },
+                        security: [{BearerAuth: []}]
+                    },
+                    apis: ["./app/routers/**/*.js"]
+                }),
+                {explorer:true}
+            )
+        )
     }
     createServer(){
         http.createServer(this.#app).listen(this.#PORT, () => {

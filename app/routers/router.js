@@ -1,3 +1,4 @@
+const { checkRole, verifyToken } = require("../http/middlewares/verifyAccessToken");
 const redisClient = require("../utils/init-redis");
 const { AdminRoutes } = require("./admin/admin.routes");
 const  {HomeRoutes}  = require("./api");
@@ -14,7 +15,7 @@ const router = require("express").Router();
 
 router.use("/developer", DeveloperRoutes);
 router.use("/user", userAuthRoutes);
-router.use("/admin", AdminRoutes);
+router.use("/admin", verifyToken, checkRole("ADMIN"), AdminRoutes);
 router.use("/", HomeRoutes);
 
 module.exports = {

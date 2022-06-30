@@ -1,5 +1,5 @@
 const createError = require("http-errors");
-// const { sendSMS } = require("../../../..");
+const {sendSMS} = require("../../../../../app")
 const { ROLES } = require("../../../../utils/constant");
 const { randomNumber, signAccessToken, verifyRefreshToken, signRefreshToken } = require("../../../../utils/function");
 const { userModel } = require("../../../models/user");
@@ -15,7 +15,6 @@ class userAuthControllers extends Controllers{
             const result = await this.saveUser(mobile, code)
             if(!result) return createError.Unauthorized("ورود شما انجام نشد")
             // const sendResult = await sendSMS(mobile, code)
-            // console.log(sendResult )
             // if(!sendResult) return createError.Unauthorized("کد تایید ارسال نشد")
             return res.status(200).send({
                 data: {
