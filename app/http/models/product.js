@@ -18,17 +18,16 @@ const Schema = new mongoose.Schema({
     type : {type: String, required: true}, // virtual - phisical
     format : {type: String},
     supplier : {type: mongoose.Types.ObjectId, required: true},
-    details : {type: String, default: {
-        length: "",
-        weight: "",
-        hight: "",
-        width: "",
+    details : {type: Object, default: {
+        length: "0",
+        weight: "0",
+        hight: "0",
+        width: "0",
         colors: [],
         madein: [],
     }},
     
 });
-
 module.exports = {
     productModel: mongoose.model("product", Schema)
 }
