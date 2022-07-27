@@ -1,3 +1,4 @@
 /node_modules
 /app/utils/secret_key.js
 /public
+/.vscode
