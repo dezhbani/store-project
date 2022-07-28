@@ -6,7 +6,7 @@ const { deleteFileInPublic, listOfImages } = require("../../../utils/function");
 const { productModel } = require("../../models/product");
 const path = require("path");
 const { IDvalidator } = require("../../validations/public.schema");
-
+const {StatusCodes:httpStatus} = require("http-status-codes");
 class ProductController extends Controllers{
     async addProduct(req, res, next){
         try {
@@ -21,20 +21,18 @@ class ProductController extends Controllers{
                 weight: 0,
                 length: 0
             }
-            const reg = /(virtual|phisical)/i
-            console.log(reg.test("virtual"));
             if(type === "virtual" && width === '' && height === '' && weight === ''&& length === ''){
                 details = details 
-            }else if(type === "phisical" &&  width === '' && height === '' && weight === ''&& length === '' ){
+            }else if(type === "phisical" &&  width !== '' && height !== '' && weight !== ''&& length !== '' ){
                 if (width) details.width = width;
                 if (height) details.height = height;
                 if (weight) details.weight = weight;
                 if (length) details.length = length;
             }
-            const product = await productModel.create({text, short_text, category, title, tags, count, price, discount, type, images, details, supplier})
-            return res.status(201).json({
+            await productModel.create({text, short_text, category, title, tags, count, price, discount, type, images, details, supplier})
+            return res.status(httpStatus.CREATED).json({
                 data: {
-                    statusCode: 201,
+                    statusCode: httpStatus.CREATED,
                     message: "ثبت محصول با موفقیت انجام شد"
                 }
             })
@@ -49,9 +47,9 @@ class ProductController extends Controllers{
         try {
             const {id} = req.params;
             const product = await this.findProductByID(id);
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: {
-                    statusCode: 200,
+                    statusCode: httpStatus.OK,
                     product
                 }
             })
@@ -66,10 +64,33 @@ class ProductController extends Controllers{
             await this.findProductByID(id);
             const result = await productModel.deleteOne({_id: id});
             if(result.deletedCount == 0) throw createHttpError.InternalServerError("محصول حذف نشد")
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data: {
-                    statusCode: 200,
+                    statusCode: httpStatus.OK,
                     message: "محصول با موفقیت حذف شد"
+                }
+            })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+    async searchProduct(req, res, next){
+        try {
+            const search = req?.query?.search || "";
+            if(search) {
+                const products = await productModel.find({
+                    $text: {
+                        $search: new RegExp(search, "ig")
+                    }
+                })
+            }else {
+                products = await productModel.find({})
+            }
+            return res.status(httpStatus.OK).json({
+                data: {
+                    statusCode: httpStatus.OK,
+                    products
                 }
             })
         } catch (error) {
@@ -88,9 +109,9 @@ class ProductController extends Controllers{
     async getAllProduct(req, res, next){
         try {
            const product = await productModel.find({});
-           return res.status(200).json({
+           return res.status(httpStatus.OK).json({
             data: {
-                statusCode: 200,
+                statusCode: httpStatus.OK,
                 products: product
             }
            })

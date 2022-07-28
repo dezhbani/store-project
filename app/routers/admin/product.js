@@ -123,12 +123,29 @@ router.post("/add", uploadFile.array("image", 10), stringToArray("tags"), Produc
  *  /admin/product/list:
  *      get:
  *          tags: [Product(AdminPanel)]
- *          summary: get list of product
+ *          summary: search in products
  *          responses:
  *              200:
  *                  description: success
  */
 router.get("/list", ProductController.getAllProduct)
+
+/**
+ * @swagger
+ *  /admin/product/search:
+ *      get:
+ *          tags: [Product(AdminPanel)]
+ *          summary: get list of product
+ *          parameters:
+ *              -   in: query
+ *                  name: search
+ *                  type: string
+ *                  description: text for search in title, text, short_text of (product)
+ *          responses:
+ *              200:
+ *                  description: success
+ */
+router.get("/search", ProductController.searchProduct)
 
 /**
  * @swagger
