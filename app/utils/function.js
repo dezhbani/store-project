@@ -115,6 +115,5 @@ module.exports = {
     listOfImages,
     copyObject,
     setDetails,
-    strToArray,
     deleteInvalidProperties
 }

@@ -1,34 +1,32 @@
 const createHttpError = require("http-errors");
 const {Controllers} = require("../controllers");
 const {createProductSchema } = require("../../validations/admin/product.schema");
-const mongoose = require("mongoose");
-const { deleteFileInPublic, listOfImages } = require("../../../utils/function");
+const { deleteFileInPublic, listOfImages, copyObject, strToArray, setDetails, deleteInvalidProperties } = require("../../../utils/function");
 const { productModel } = require("../../models/product");
-const path = require("path");
 const { IDvalidator } = require("../../validations/public.schema");
 const {StatusCodes:httpStatus} = require("http-status-codes");
+
+const productBlackList = {
+    BOOKMARK: "bookmark",
+    LIKE: "like", 
+    DISLIKE: "dislike", 
+    COMMENTS: "comments", 
+    SUPPLIER: "supplier", 
+    WIDTH: "width", 
+    LENGTH: "length", 
+    WEIGHT: "weight", 
+    HEIGHT: "height", 
+    COLORS: "colors"
+}
+Object.freeze(productBlackList);
 class ProductController extends Controllers{
     async addProduct(req, res, next){
         try {
-            // return console.log( req.body)
             const images = listOfImages(req?.files || [], req.body.fileUploadPath);
             const productBody = await createProductSchema.validateAsync(req.body);
-            const { type, discount, width, length, height, price, text, count, short_text, title, weight, tags, category} = productBody;
+            const { type, discount, price, text, count, short_text, title, tags, category} = productBody;
             const supplier = req.user._id;
-            let details = {
-                width: 0, 
-                height: 0,
-                weight: 0,
-                length: 0
-            }
-            if(type === "virtual" && width === '' && height === '' && weight === ''&& length === ''){
-                details = details 
-            }else if(type === "phisical" &&  width !== '' && height !== '' && weight !== ''&& length !== '' ){
-                if (width) details.width = width;
-                if (height) details.height = height;
-                if (weight) details.weight = weight;
-                if (length) details.length = length;
-            }
+            const details = setDetails(req.body)
             await productModel.create({text, short_text, category, title, tags, count, price, discount, type, images, details, supplier})
             return res.status(httpStatus.CREATED).json({
                 data: {
@@ -100,7 +98,21 @@ class ProductController extends Controllers{
     }
     async editProduct(req, res, next){
         try {
-           
+            const { id } = req.params;
+            const product = await this.findProductByID(id);
+            const data = copyObject(req.body);
+            data.image = listOfImages(req?.files || [], req.body.fileUploadPath); 
+            let blackListFields = Object.values(productBlackList)
+            data.details = setDetails(req.body);
+            deleteInvalidProperties(data, blackListFields);
+            const updateResult = await productModel.updateOne({_id: product.id}, {$set: data});
+            if(updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("به روز رسانی انجام نشد");
+            return res.status(httpStatus.OK).json({
+                data: {
+                    statusCode: httpStatus.OK,
+                    message: "محصول با موفقیت آپدیت شد"
+                }
+            })
         } catch (error) {
             console.log(error)
             next(error)
