@@ -5,6 +5,7 @@ const { ACCESS_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require("./constan
 const redisClient = require("./init-redis");
 const path = require("path");
 const fs = require("fs");
+const { result } = require("@hapi/joi/lib/base");
 
 function randomNumber(){
     return Math.floor((Math.random() * 90000) + 10000)
@@ -56,14 +57,12 @@ async function verifyRefreshToken(token){
             })
         })
 }
-
 function deleteFileInPublic(fileAddress){
     if(fileAddress){
         const pathFile = path.join(__dirname, "..", "..", fileAddress);
         if (fs.existsSync(pathFile)) fs.unlinkSync(pathFile); 
     }
 }
-
 function listOfImages(files, fileUploadPath){
     if(files?.length > 0){
         return (files.map(file => path.join(fileUploadPath, file.filename))).map(item => item.replace(/\\/g, "/"))
@@ -71,6 +70,41 @@ function listOfImages(files, fileUploadPath){
         return []
     }
 }
+function setDetails(body){
+    const {type, width, height, weight, length, colors} = body;
+    console.log(colors)
+    let details = {
+        width: 0, 
+        height: 0,
+        weight: 0,
+        length: 0
+    }
+    if(colors.length > 0) details.colors = colors;
+    if(type === "virtual" && width === '' && height === '' && weight === ''&& length === ''){
+        details = details 
+    }else if(type === "phisical" &&  width !== '' && height !== '' && weight !== ''&& length !== '' ){
+        if (width) details.width = width;
+        if (height) details.height = height;
+        if (weight) details.weight = weight;
+        if (length) details.length = length;
+    }
+    console.log(details)
+    return details
+}
+function copyObject(object){
+    return JSON.parse(JSON.stringify(object))
+}
+function deleteInvalidProperties(data = {}, blackListFields){
+    let nullishData = ["", " ", "0", 0, null, undefined];
+    Object.keys(data).forEach(key => {
+        if(blackListFields.includes(data[key])) delete data[key];
+        if(typeof data[key] === "string") data[key] = data[key].trim();
+        if(Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim());
+        if(Array.isArray(data[key]) && data[key].length == 0) delete data[key];
+        if(nullishData.includes(data[key])) delete data[key];
+    })
+}
+
 
 module.exports = {
     randomNumber,
@@ -78,5 +112,9 @@ module.exports = {
     signRefreshToken,
     verifyRefreshToken,
     deleteFileInPublic,
-    listOfImages
+    listOfImages,
+    copyObject,
+    setDetails,
+    strToArray,
+    deleteInvalidProperties
 }
