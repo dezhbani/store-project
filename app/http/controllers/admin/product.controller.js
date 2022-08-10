@@ -1,36 +1,36 @@
 const createHttpError = require("http-errors");
-const {Controllers} = require("../controllers");
-const {createProductSchema } = require("../../validations/admin/product.schema");
-const { deleteFileInPublic, listOfImages, copyObject, strToArray, setDetails, deleteInvalidProperties } = require("../../../utils/function");
+const { Controllers } = require("../controllers");
+const { createProductSchema } = require("../../validations/admin/product.schema");
+const { deleteFileInPublic, listOfImages, copyObject, setDetails, deleteInvalidProperties } = require("../../../utils/function");
 const { productModel } = require("../../models/product");
 const { IDvalidator } = require("../../validations/public.schema");
-const {StatusCodes:httpStatus} = require("http-status-codes");
+const { StatusCodes: httpStatus } = require("http-status-codes");
 
 const productBlackList = {
     BOOKMARK: "bookmark",
-    LIKE: "like", 
-    DISLIKE: "dislike", 
-    COMMENTS: "comments", 
-    SUPPLIER: "supplier", 
-    WIDTH: "width", 
-    LENGTH: "length", 
-    WEIGHT: "weight", 
-    HEIGHT: "height", 
+    LIKE: "like",
+    DISLIKE: "dislike",
+    COMMENTS: "comments",
+    SUPPLIER: "supplier",
+    WIDTH: "width",
+    LENGTH: "length",
+    WEIGHT: "weight",
+    HEIGHT: "height",
     COLORS: "colors"
 }
 Object.freeze(productBlackList);
-class ProductController extends Controllers{
-    async addProduct(req, res, next){
+class ProductController extends Controllers {
+    async addProduct(req, res, next) {
         try {
             const images = listOfImages(req?.files || [], req.body.fileUploadPath);
             const productBody = await createProductSchema.validateAsync(req.body);
-            const { type, discount, price, text, count, short_text, title, tags, category} = productBody;
+            const { type, discount, price, text, count, short_text, title, tags, category } = productBody;
             const supplier = req.user._id;
             const details = setDetails(req.body)
-            await productModel.create({text, short_text, category, title, tags, count, price, discount, type, images, details, supplier})
+            await productModel.create({ text, short_text, category, title, tags, count, price, discount, type, images, details, supplier })
             return res.status(httpStatus.CREATED).json({
+                statusCode: httpStatus.CREATED,
                 data: {
-                    statusCode: httpStatus.CREATED,
                     message: "ثبت محصول با موفقیت انجام شد"
                 }
             })
@@ -41,13 +41,13 @@ class ProductController extends Controllers{
             next(error)
         }
     }
-    async getProductByID(req, res, next){
+    async getProductByID(req, res, next) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             const product = await this.findProductByID(id);
             return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 data: {
-                    statusCode: httpStatus.OK,
                     product
                 }
             })
@@ -56,15 +56,15 @@ class ProductController extends Controllers{
             next(error)
         }
     }
-    async removeProduct(req, res, next){
+    async removeProduct(req, res, next) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             await this.findProductByID(id);
-            const result = await productModel.deleteOne({_id: id});
-            if(result.deletedCount == 0) throw createHttpError.InternalServerError("محصول حذف نشد")
+            const result = await productModel.deleteOne({ _id: id });
+            if (result.deletedCount == 0) throw createHttpError.InternalServerError("محصول حذف نشد")
             return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 data: {
-                    statusCode: httpStatus.OK,
                     message: "محصول با موفقیت حذف شد"
                 }
             })
@@ -73,21 +73,22 @@ class ProductController extends Controllers{
             next(error)
         }
     }
-    async searchProduct(req, res, next){
+    async searchProduct(req, res, next) {
         try {
             const search = req?.query?.search || "";
-            if(search) {
-                const products = await productModel.find({
+            let products;
+            if (search) {
+                products = await productModel.find({
                     $text: {
                         $search: new RegExp(search, "ig")
                     }
                 })
-            }else {
+            } else {
                 products = await productModel.find({})
             }
             return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 data: {
-                    statusCode: httpStatus.OK,
                     products
                 }
             })
@@ -96,20 +97,20 @@ class ProductController extends Controllers{
             next(error)
         }
     }
-    async editProduct(req, res, next){
+    async editProduct(req, res, next) {
         try {
             const { id } = req.params;
             const product = await this.findProductByID(id);
             const data = copyObject(req.body);
-            data.image = listOfImages(req?.files || [], req.body.fileUploadPath); 
+            data.image = listOfImages(req?.files || [], req.body.fileUploadPath);
             let blackListFields = Object.values(productBlackList)
             data.details = setDetails(req.body);
             deleteInvalidProperties(data, blackListFields);
-            const updateResult = await productModel.updateOne({_id: product.id}, {$set: data});
-            if(updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("به روز رسانی انجام نشد");
+            const updateResult = await productModel.updateOne({ _id: product.id }, { $set: data });
+            if (updateResult.modifiedCount == 0) throw createHttpError.InternalServerError("به روز رسانی انجام نشد");
             return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
                 data: {
-                    statusCode: httpStatus.OK,
                     message: "محصول با موفقیت آپدیت شد"
                 }
             })
@@ -118,24 +119,24 @@ class ProductController extends Controllers{
             next(error)
         }
     }
-    async getAllProduct(req, res, next){
+    async getAllProduct(req, res, next) {
         try {
-           const product = await productModel.find({});
-           return res.status(httpStatus.OK).json({
-            data: {
+            const product = await productModel.find({});
+            return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
-                products: product
-            }
-           })
+                data: {
+                    products: product
+                }
+            })
         } catch (error) {
             console.log(error)
             next(error)
         }
     }
-    async findProductByID(productID){
-        const {id} = await IDvalidator.validateAsync({id: productID});
+    async findProductByID(productID) {
+        const { id } = await IDvalidator.validateAsync({ id: productID });
         const product = await productModel.findById(id);
-        if(!product) throw createHttpError.NotFound("محصولی یافت نشد");
+        if (!product) throw createHttpError.NotFound("محصولی یافت نشد");
         return product
     }
 }

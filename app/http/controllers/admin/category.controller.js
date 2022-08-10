@@ -1,19 +1,19 @@
 const createHttpError = require("http-errors");
 const { catergoryModel } = require("../../models/categories");
 const { addCategorySchema, editCategorySchema } = require("../../validations/admin/category.schema");
-const {Controllers} = require("../controllers");
+const { Controllers } = require("../controllers");
 const mongoose = require("mongoose");
 
-class CatergoryController extends Controllers{
-    async addCategory(req, res, next){
+class CatergoryController extends Controllers {
+    async addCategory(req, res, next) {
         try {
             await addCategorySchema.validateAsync(req.body);
-            const {title, parents} = req.body;
-            const category = await catergoryModel.create({title, parent: parents});
-            if(!category) throw createHttpError.InternalServerError("خطای داخلی");
+            const { title, parents } = req.body;
+            const category = await catergoryModel.create({ title, parent: parents });
+            if (!category) throw createHttpError.InternalServerError("خطای داخلی");
             return res.status(201).json({
-                data:{
-                    statusCode: 201,
+                statusCode: 201,
+                data: {
                     message: "دسته بندی ثبت شد"
                 }
             })
@@ -22,12 +22,12 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-    async geAllParents(req, res, next){
+    async geAllParents(req, res, next) {
         try {
-            const parent = await catergoryModel.find({parent: undefined}, {__v: 0, children: 0})
+            const parent = await catergoryModel.find({ parent: undefined }, { __v: 0, children: 0 })
             return res.status(200).json({
-                data:{
-                    statusCode:200,
+                statusCode: 200,
+                data: {
                     parent
                 }
             })
@@ -35,14 +35,14 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-    async geChildrenOfParents(req, res, next){
+    async geChildrenOfParents(req, res, next) {
         try {
-            const {parent} = req.params;
-            const children = await catergoryModel.find({parent}, {__v:0, parent:0});
-            if(children.length == 0) throw createHttpError.NotFound("دسته بندی مورد نظر یافت نشد")
+            const { parent } = req.params;
+            const children = await catergoryModel.find({ parent }, { __v: 0, parent: 0 });
+            if (children.length == 0) throw createHttpError.NotFound("دسته بندی مورد نظر یافت نشد")
             return res.status(200).json({
-                data:{
-                    statusCode:200,
+                statusCode: 200,
+                data: {
                     children
                 }
             })
@@ -50,7 +50,7 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-    async getAllCategory(req, res, next){
+    async getAllCategory(req, res, next) {
         try {
             // const category = await catergoryModel.aggregate([
             //     {
@@ -77,10 +77,10 @@ class CatergoryController extends Controllers{
             //         }
             //     }
             // ])
-            const categories = await catergoryModel.find({parent: undefined})
+            const categories = await catergoryModel.find({ parent: undefined })
             return res.status(200).json({
+                statusCode: 200,
                 data: {
-                    statusCode:200,
                     categories
                 }
             })
@@ -88,33 +88,33 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-    async getCategoryById(req, res, next){
+    async getCategoryById(req, res, next) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             const category = await catergoryModel.aggregate([
                 {
-                    $match : {_id: mongoose.Types.ObjectId(id)}
+                    $match: { _id: mongoose.Types.ObjectId(id) }
                 },
                 {
-                    $lookup : {
-                        from : "categories",
-                        localField : "_id",
-                        foreignField : "parent",
-                        as : "children",
+                    $lookup: {
+                        from: "categories",
+                        localField: "_id",
+                        foreignField: "parent",
+                        as: "children",
 
                     }
                 },
                 {
-                    $project : {
-                        __v : 0,
-                        "children.__v" : 0,
-                        "children.parent" : 0
+                    $project: {
+                        __v: 0,
+                        "children.__v": 0,
+                        "children.parent": 0
                     }
                 }
             ])
             return res.status(200).json({
+                statusCode: 200,
                 data: {
-                    statusCode: 200,
                     category
                 }
             })
@@ -122,17 +122,17 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-    async removeCategory(req, res, next){
+    async removeCategory(req, res, next) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             const category = await this.checkExistCategory(id);
             const deleteResult = await catergoryModel.deleteMany({
-                $or: [{_id: category._id}, {parent: category._id}]
+                $or: [{ _id: category._id }, { parent: category._id }]
             });
-            if(deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("حذف دسته بندی انجام نشد");
+            if (deleteResult.deletedCount == 0) throw createHttpError.InternalServerError("حذف دسته بندی انجام نشد");
             return res.status(200).json({
-                data:{
-                    statusCode:200,
+                statusCode: 200,
+                data: {
                     message: "حذف دسته بندی با موفقیت انجام شد"
                 }
             })
@@ -140,17 +140,17 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-    async editCategory(req, res, next){
+    async editCategory(req, res, next) {
         try {
-            const {id} = req.params;
-            const {title} = req.body;
+            const { id } = req.params;
+            const { title } = req.body;
             const ctegory = await this.checkExistCategory(id);
             await editCategorySchema.validateAsync(req.body);
-            const resultOfUpdate = await catergoryModel.updateOne({_id: id}, {$set: {title}});
-            if(resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد");
+            const resultOfUpdate = await catergoryModel.updateOne({ _id: id }, { $set: { title } });
+            if (resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد");
             return res.status(200).json({
-                data:{
-                    statusCode: 200,
+                statusCode: 200,
+                data: {
                     message: "بروز رسانی با موفقیت انجام شد"
                 }
             })
@@ -158,10 +158,10 @@ class CatergoryController extends Controllers{
             next(error)
         }
     }
-  
-    async checkExistCategory(id){
+
+    async checkExistCategory(id) {
         const category = await catergoryModel.findById(id);
-        if(!category) throw createHttpError.NotFound("دسته بندی یافت نشد");
+        if (!category) throw createHttpError.NotFound("دسته بندی یافت نشد");
         return category;
     }
 
