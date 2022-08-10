@@ -1,9 +1,9 @@
 const { checkRole, verifyToken } = require("../http/middlewares/verifyAccessToken");
 const redisClient = require("../utils/init-redis");
 const { AdminRoutes } = require("./admin/admin.routes");
+const { userAuthRoutes } = require("./user/auth");
 const  {HomeRoutes}  = require("./api");
 const { DeveloperRoutes } = require("./developer.routes");
-const { userAuthRoutes } = require("./user/auth");
 
 const router = require("express").Router();
 
