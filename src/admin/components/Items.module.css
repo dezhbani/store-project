@@ -1,0 +1,17 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+.container{
+    display: flex;
+    background-color: white;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+    justify-content: space-between;
+    /* float: right; */
+}
+
+/* .container h3{
+    margin-right: 5px;
+} */
