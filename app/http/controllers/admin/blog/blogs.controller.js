@@ -1,8 +1,8 @@
-const { blogModel } = require("../../models/blogs");
-const { createBlogSchema } = require("../../validations/admin/blog.schema");
-const { Controllers } = require("../controllers");
+const { blogModel } = require("../../../models/blogs");
+const { createBlogSchema } = require("../../../validations/admin/blog.schema");
+const { Controllers } = require("../../controllers");
 const path = require("path");
-const { deleteFileInPublic } = require("../../../utils/function");
+const { deleteFileInPublic } = require("../../../../utils/function");
 const createHttpError = require("http-errors");
 class BlogController extends Controllers {
     async createBlog(req, res, next) {

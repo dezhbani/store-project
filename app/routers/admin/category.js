@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { CategoryController } = require("../../http/controllers/admin/category.controller");
+const { CategoryController } = require("../../http/controllers/admin/category/category.controller");
 
 router.post("/add", CategoryController.addCategory)
 router.get("/parents", CategoryController.geAllParents)

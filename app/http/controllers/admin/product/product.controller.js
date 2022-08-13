@@ -1,9 +1,9 @@
 const createHttpError = require("http-errors");
-const { Controllers } = require("../controllers");
-const { createProductSchema } = require("../../validations/admin/product.schema");
-const { deleteFileInPublic, listOfImages, copyObject, setDetails, deleteInvalidProperties } = require("../../../utils/function");
-const { productModel } = require("../../models/product");
-const { IDvalidator } = require("../../validations/public.schema");
+const { Controllers } = require("../../controllers");
+const { createProductSchema } = require("../../../validations/admin/product.schema");
+const { deleteFileInPublic, listOfImages, copyObject, setDetails, deleteInvalidProperties } = require("../../../../utils/function");
+const { productModel } = require("../../../models/product");
+const { IDvalidator } = require("../../../validations/public.schema");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 
 const productBlackList = {

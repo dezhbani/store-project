@@ -11,7 +11,7 @@ const Chapter = mongoose.Schema({
     text: {type: String, default: ""},
     episodes: {type: [Episodes], default: []}
 })
-const Schema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema({
     title : {type: String, required: true},
     short_text : {type: String, required: true},
     text : {type: String, required: true},
@@ -24,13 +24,14 @@ const Schema = new mongoose.Schema({
     bookmarks : {type: [mongoose.Types.ObjectId], default: []},
     price : {type: Number, default:0},
     discount : {type: Number, default:0},
+    status: {type: String, default: "not started"}, // not started, holding, complated
     type : {type: String, default:"free", required: true}, // free, cash, special
     time : {type: String, default: "00:00:00"},
     teacher : {type: mongoose.Types.ObjectId, ref: "user", required: true},
     chapter: {type: [Chapter], default: []},
-    students: {type: mongoose.Types.ObjectId, default: [], ref: "user"}
+    students: {type: [mongoose.Types.ObjectId], default: [], ref: "user"}
 });
-
+courseSchema.index({title: "text", short_text: "text", text: "text"});
 module.exports = {
-    Courses: mongoose.model("course", Schema)
+    courseModel: mongoose.model("course", courseSchema)
 }

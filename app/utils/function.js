@@ -70,6 +70,10 @@ function listOfImages(files, fileUploadPath){
         return []
     }
 }
+function bindImagePath(uploadPath, fileName){
+    const image = path.join(uploadPath, fileName).replace(/\\/g, "/");
+    return image;
+}
 function setDetails(body){
     const {type, width, height, weight, length, colors} = body;
     console.log(colors)
@@ -115,5 +119,6 @@ module.exports = {
     listOfImages,
     copyObject,
     setDetails,
-    deleteInvalidProperties
+    deleteInvalidProperties,
+    bindImagePath
 }
