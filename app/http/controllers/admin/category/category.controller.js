@@ -147,11 +147,11 @@ class CatergoryController extends Controllers {
             const ctegory = await this.checkExistCategory(id);
             await editCategorySchema.validateAsync(req.body);
             const resultOfUpdate = await catergoryModel.updateOne({ _id: id }, { $set: { title } });
-            if (resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("بروزرسانی انجام نشد");
+            if (resultOfUpdate.modifiedCount == 0) throw createHttpError.InternalServerError("به روزرسانی انجام نشد");
             return res.status(200).json({
                 statusCode: 200,
                 data: {
-                    message: "بروز رسانی با موفقیت انجام شد"
+                    message: "به روز رسانی با موفقیت انجام شد"
                 }
             })
         } catch (error) {

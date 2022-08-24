@@ -61,12 +61,20 @@ class CourseController extends Controllers {
             let courses;
             if (search) {
                 courses = await courseModel.find({
-                    $text: {
-                        $search: new RegExp(search, "ig")
-                    }
-                }).sort({ _id: -1 })
+                    $text: {$search: new RegExp(search, "ig")}
+                })
+                .populate([
+                    {path: "category", select: {title: 1}},
+                    {path: "teacher", select: {first_name: 1, last_name: 1, mobile: 1, email: 1}}
+                ])
+                .sort({ _id: -1 })
             } else {
-                courses = await courseModel.find({}).sort({ _id: -1 })
+                courses = await courseModel.find({})
+                .populate([
+                    {path: "category", select: {title: 1}},
+                    {path: "teacher", select: {first_name: 1, last_name: 1, mobile: 1, email: 1}}
+                ])
+                .sort({ _id: -1 })
             }
             return res.status(httpStatus.OK).json({
                 data: {

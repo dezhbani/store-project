@@ -3,8 +3,7 @@ const { stringToArray } = require("../../http/middlewares/stringToArray");
 const { uploadFile } = require("../../utils/multer");
 const router = require("express").Router();
 
-router.post("/add/course", uploadFile.array("image", 10), stringToArray("tags"), CourseCountrollers.addCourse) // create new course
-router.post("/add/course", uploadFile.array("image", 10), stringToArray("tags"), CourseCountrollers.addCourse) // create new course
+router.post("/add", uploadFile.array("image", 10), stringToArray("tags"), CourseCountrollers.addCourse) // create new course
 router.get("/list", CourseCountrollers.getAllCorse) //get all course
 router.get("/search", CourseCountrollers.searchCourse) //get serach about  course
 router.get("/:id", CourseCountrollers.getCourseByID) // get a course

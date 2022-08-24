@@ -15,27 +15,6 @@
  * @swagger
  *  components:
  *      schemas:
- *          addChapter:
- *              type: object
- *              required:
- *                  -   id
- *                  -   title
- *              properties:
- *                  id: 
- *                      type: string
- *                      description: id of course
- *                  title: 
- *                      type: string
- *                      description: title of chapter
- *                  text: 
- *                      type: string
- *                      description: summary of chapter
- *                  episodes:
- *                      type: array
- *                      items:
- *                          type: string
- *                          format: binary
- *                      description: the episodes of chapter
  *          Course:
  *              type: object
  *              required:
@@ -142,14 +121,8 @@
  */
 
 /**
- *  @swagger
- *  components:
- *      schemas:
- */
-
-/**
  * @swagger
- *  /admin/course/add/course:
+ *  /admin/course/add:
  *      post:
  *          tags: [Course(AdminPanel)]
  *          summary: create and save course
@@ -162,27 +135,7 @@
  *          responses:
  *              201:
  *                  description: created
- */
-
-/**
- * @swagger
- *  /admin/course/add/chapter:
- *      post:
- *          tags: [Course(AdminPanel)]
- *          summary: create and save course
- *          requestBody:
- *              required: true
- *              content:
- *                  application/x-www-form-urlencoded: 
- *                      schema:
- *                          $ref: '#/components/schemas/addChapter'
- *                  application/json: 
- *                      schema:
- *                          $ref: '#/components/schemas/addChapter'
- *          responses:
- *              201:
- *                  description: created
- */
+ */ 
 
 /**
  * @swagger

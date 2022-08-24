@@ -11,6 +11,8 @@ const router = require("express").Router();
  *  tags:
  *      -   name: AdminPanel
  *          description: action of admin (add, remove, edit & any do)
+ *      -   name: Chapter(AdminPanel)
+ *          description: action of admin (add, remove, edit & any do)
  *      -   name: Course(AdminPanel)
  *          description: all methods and routes aboute category
  *      -   name: Product(AdminPanel)
