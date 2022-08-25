@@ -109,6 +109,19 @@ function deleteInvalidProperties(data = {}, blackListFields){
     })
 }
 
+function getTime(seconds) {
+    let total = Math.round(seconds) / 60;
+    let [minutes, percent] = String(total).split(".");
+    let second = Math.round((percent * 60) / 100).toString().substring(0, 2);
+    let houre = 0;
+    if (minutes > 60) {
+        total = minutes / 60
+         let [h1, percent] = String(total).split(".");
+         houre = h1,
+         minutes = Math.round((percent * 60) / 100).toString().substring(0, 2);
+    }
+    return (houre + ":" + minutes + ":" +second)
+}
 
 module.exports = {
     randomNumber,
@@ -120,5 +133,6 @@ module.exports = {
     copyObject,
     setDetails,
     deleteInvalidProperties,
-    bindImagePath
+    bindImagePath,
+    getTime
 }
