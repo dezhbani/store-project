@@ -66,3 +66,19 @@
  *              201:
  *                  description: created
  */ 
+
+/**
+ * @swagger
+ *  /admin/episode/remove/{episodeID}:
+ *      delete:
+ *          tags: [Episode(AdminPanel)]
+ *          summary: create and save course
+ *          parameters:
+ *              -   in: path
+ *                  name: episodeID
+ *                  type: string
+ *                  required: true
+ *          responses:
+ *              200:
+ *                  description: ok
+ */ 

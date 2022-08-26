@@ -66,7 +66,6 @@ class ChapterController extends Controllers {
         try {
             const { chapterID } = req.params;
             const chapters = await this.getChapterByID(chapterID);
-            console.log(chapters)
             const deleteResult = await courseModel.updateOne({ "chapter._id": chapterID }, {
                 $pull: { 
                     chapter: {
@@ -74,7 +73,6 @@ class ChapterController extends Controllers {
                     }
                 }
             });
-            console.log(deleteResult)
             if (deleteResult.modifiedCount == 0) throw createHttpError.InternalServerError("فصل حذف نشد");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,

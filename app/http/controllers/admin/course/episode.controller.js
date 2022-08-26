@@ -5,7 +5,8 @@ const { default: getVideoDurationInSeconds } = require("get-video-duration");
 const { getTime } = require("../../../../utils/function");
 const { courseModel } = require("../../../models/course");
 const createHttpError = require("http-errors");
-const {StatusCodes: httpStatus} = require("http-status-codes")
+const {StatusCodes: httpStatus} = require("http-status-codes");
+const { IDvalidator } = require("../../../validations/public.schema");
 
 class EpisodeController extends Controllers {
     async addEpisode(req, res, next) {
@@ -33,6 +34,27 @@ class EpisodeController extends Controllers {
                 }
             })
         } catch (error) {
+            next(error)
+        }
+    }
+    async deleteEpisode(req, res, next) {
+        try {
+            const { id:episodeID } = await IDvalidator.validateAsync({id: req.params.episodeID});
+            const deleteResult = await courseModel.updateOne({"chapter.episodes._id": episodeID }, {
+                $pull: { "chapter.$.episodes":{
+                    _id: episodeID
+                } 
+            }
+            });
+            if (deleteResult.modifiedCount == 0) throw createHttpError.InternalServerError("ویدئو حذف نشد");
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                data: {
+                    message: "ویدئو با موفقیت حذف شد"
+                }
+            })
+        } catch (error) {
+            console.log(error)
             next(error)
         }
     }
