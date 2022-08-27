@@ -14,7 +14,7 @@
  * @swagger
  *  components:
  *      schemas:
- *          Episode:
+ *          addEpisode:
  *              type: object
  *              required:
  *                  -   courseID
@@ -48,6 +48,25 @@
  *                      type: string
  *                      description: the the file of video
  *                      format: binary
+ *          editEpisode:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of epsode
+ *                      example: title of episode 1
+ *                  text:
+ *                      type: string
+ *                      description: the text of episode
+ *                      example: text of episode 1
+ *                  type:
+ *                      type: string
+ *                      description: the type of episode (select lock or unlock)
+ *                      $ref: '#/components/schemas/EpisodeType'
+ *                  video:
+ *                      type: string
+ *                      description: the the file of video
+ *                      format: binary
  */
 
 /**
@@ -55,13 +74,13 @@
  *  /admin/episode/add:
  *      post:
  *          tags: [Episode(AdminPanel)]
- *          summary: create and save course
+ *          summary: create and save episode for chapter
  *          requestBody:
  *              required: true
  *              content: 
  *                  multipart/form-data:
  *                      schema:
- *                          $ref: '#/components/schemas/Episode'
+ *                          $ref: '#/components/schemas/addEpisode'
  *          responses:
  *              201:
  *                  description: created
@@ -72,7 +91,7 @@
  *  /admin/episode/remove/{episodeID}:
  *      delete:
  *          tags: [Episode(AdminPanel)]
- *          summary: create and save course
+ *          summary: delete episode of course
  *          parameters:
  *              -   in: path
  *                  name: episodeID
@@ -80,5 +99,27 @@
  *                  required: true
  *          responses:
  *              200:
- *                  description: ok
+ *                  description: deleted
+ */ 
+
+/**
+ * @swagger
+ *  /admin/episode/edit/{episodeID}:
+ *      patch:
+ *          tags: [Episode(AdminPanel)]
+ *          summary: edite episode of course
+ *          parameters:
+ *              -   in: path
+ *                  name: episodeID
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content: 
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/editEpisode'
+ *          responses:
+ *              200:
+ *                  description: updated
  */ 

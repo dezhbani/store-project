@@ -31,8 +31,18 @@ const courseSchema = new mongoose.Schema({
     teacher : {type: mongoose.Types.ObjectId, ref: "user", required: true},
     chapter: {type: [Chapter], default: []},
     students: {type: [mongoose.Types.ObjectId], default: [], ref: "user"}
+},{
+    toJSON: {
+        virtuals: true
+    }
 });
+
 courseSchema.index({title: "text", short_text: "text", text: "text"});
+
+courseSchema.virtual("imageURL").get(function(){
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`
+})
+
 module.exports = {
     courseModel: mongoose.model("course", courseSchema)
 }
