@@ -1,16 +1,23 @@
 const { default: mongoose } = require("mongoose");
 const { CommentSchema } = require("./public.schema");
-const Episodes = mongoose.Schema({
+const episodeSchema = mongoose.Schema({
     title: {type: String, required: true},
     text: {type: String, required: true},
     type: {type: String, default: "lock"},
     time: {type: String, required: true, default: "00:00:00"},
     videoAddress: {type: String, required: true}
+}, {
+    toJSON: {
+        virtuals: true
+    }
 })
-const Chapter = mongoose.Schema({
+episodeSchema.virtual("videoURL").get(function(){
+    return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.videoAddress}`
+})
+const chapterSchema = mongoose.Schema({
     title: {type: String, required: true},
     text: {type: String, default: ""},
-    episodes: {type: [Episodes], default: []}
+    episodes: {type: [episodeSchema], default: []}
 })
 const courseSchema = new mongoose.Schema({
     title : {type: String, required: true},
@@ -29,7 +36,7 @@ const courseSchema = new mongoose.Schema({
     type : {type: String, default:"free", required: true}, // free, cash, special
     time : {type: String, default: "00:00:00"},
     teacher : {type: mongoose.Types.ObjectId, ref: "user", required: true},
-    chapter: {type: [Chapter], default: []},
+    chapter: {type: [chapterSchema], default: []},
     students: {type: [mongoose.Types.ObjectId], default: [], ref: "user"}
 },{
     toJSON: {
