@@ -123,6 +123,27 @@ function getTime(seconds) {
     return (houre + ":" + minutes + ":" +second)
 }
 
+function timeOfCourse(chapters = []) {
+    let time, hour, minute, second = 0;
+    for (const chapter of chapters) {
+        if(Array.isArray(chapter?.episodes)){
+            for (const episode of chapter.episodes) {
+                if(episode?.time) time = episode.time.split(":");  //[hour, minute, second]
+                else time = "00:00:00".split(":");
+                if(time.length == 3){
+                    second += Number(time[0]) * 3600; // convert hour to second
+                    second += Number(time[1]) * 60; // convert minute to second
+                    second += Number(time[2]); 
+                }else if(time.length == 2){
+                    second += Number(time[0]) ; // convert minute to second
+                    second += Number(time[1]) * 60; 
+                }
+            }
+        }
+    }
+    return getTime(second)
+}
+
 module.exports = {
     randomNumber,
     signAccessToken,
@@ -134,5 +155,6 @@ module.exports = {
     setDetails,
     deleteInvalidProperties,
     bindImagePath,
-    getTime
+    getTime,
+    timeOfCourse
 }
