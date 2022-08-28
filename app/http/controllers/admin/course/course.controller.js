@@ -1,11 +1,12 @@
 const { Controllers } = require("../../controllers");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { courseModel } = require("../../../models/course");
-const { bindImagePath, deleteFileInPublic } = require("../../../../utils/function");
+const { bindImagePath, deleteFileInPublic, copyObject, deleteInvalidProperties, getTime, timeOfCourse } = require("../../../../utils/function");
 const { createCourseSchema } = require("../../../validations/admin/course.schema");
 const { userModel } = require("../../../models/user");
 const createHttpError = require("http-errors");
 const { default: mongoose } = require("mongoose");
+const path = require("path");
 
 class CourseController extends Controllers {
     async addCourse(req, res, next) {
@@ -25,8 +26,7 @@ class CourseController extends Controllers {
                 discount,
                 teacher,
                 image,
-                status: "no started",
-                time: "00:00:00"
+                status: "no started"
             })
             return res.status(httpStatus.OK).json({
                 data: {
@@ -61,20 +61,20 @@ class CourseController extends Controllers {
             let courses;
             if (search) {
                 courses = await courseModel.find({
-                    $text: {$search: new RegExp(search, "ig")}
+                    $text: { $search: new RegExp(search, "ig") }
                 })
-                .populate([
-                    {path: "category", select: {title: 1}},
-                    {path: "teacher", select: {first_name: 1, last_name: 1, mobile: 1, email: 1}}
-                ])
-                .sort({ _id: -1 })
+                    .populate([
+                        { path: "category", select: { title: 1 } },
+                        { path: "teacher", select: { first_name: 1, last_name: 1, mobile: 1, email: 1 } }
+                    ])
+                    .sort({ _id: -1 })
             } else {
                 courses = await courseModel.find({})
-                .populate([
-                    {path: "category", select: {title: 1}},
-                    {path: "teacher", select: {first_name: 1, last_name: 1, mobile: 1, email: 1}}
-                ])
-                .sort({ _id: -1 })
+                    .populate([
+                        { path: "category", select: { title: 1 } },
+                        { path: "teacher", select: { first_name: 1, last_name: 1, mobile: 1, email: 1 } }
+                    ])
+                    .sort({ _id: -1 })
             }
             return res.status(httpStatus.OK).json({
                 data: {
@@ -105,7 +105,35 @@ class CourseController extends Controllers {
         }
     }
 
+    async updateCourseById(req, res, next) {
+        try {
+            const { courseID } = req.params;
+            const course = await this.findCourseById(courseID);
+            const data = copyObject(req.body);
+            const { filename, fileUploadPath } = req.body;
+            let blackList = ["time", "chapter", "episodes", "students", "bookmarks", "like", "dislikes", "comments", "teacher", "filename", "fileUploadPath"];
+            deleteInvalidProperties(data, blackList);
+            if(req.file) {
+                data.image = path.join(fileUploadPath, filename);
+                deleteFileInPublic(course.image)
+            }
+            const updateCourseResult = await courseModel.updateOne({_id: courseID}, {
+                $set: data
+            });
+            if(updateCourseResult.modifiedCount == 0) createHttpError.InternalServerError("دوره به روزرسانی نشد")     
+            return res.status(httpStatus.OK).json({
+                statuscode: httpStatus.OK,
+                data: {
+                    message: "دوره با موفقیت به روزرسانی شد"
+                }
+            })
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
     async findCourseById(id) {
+        console.log(id)
         if (!mongoose.isValidObjectId(id)) throw createHttpError.BadRequest("شناسه وارد شده صحیح نمی باشد");
         const course = await courseModel.findById(id);
         if (!course) throw createHttpError.NotFound("دوره ای یافت نشد")

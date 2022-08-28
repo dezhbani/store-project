@@ -124,7 +124,7 @@ function getTime(seconds) {
 }
 
 function timeOfCourse(chapters = []) {
-    let time, hour, minute, second = 0;
+    let time, second = 0;
     for (const chapter of chapters) {
         if(Array.isArray(chapter?.episodes)){
             for (const episode of chapter.episodes) {

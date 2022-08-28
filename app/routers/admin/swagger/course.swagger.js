@@ -69,6 +69,49 @@
  *                          type: string
  *                          format: binary
  *                      description: the index picture of course
+ *          editCourse:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                      description: the title of course
+ *                      example: title for course 1
+ *                  short_text:
+ *                      type: string
+ *                      description: the summary of text of course
+ *                      example: short text for course 1
+ *                  text:
+ *                      type: string
+ *                      description: the text of course
+ *                      example: text for course 1
+ *                  tags:
+ *                      type: array
+ *                      description: the list of tags for example(#tag1 #tag2 #tag_foo)
+ *                  category:
+ *                      type: string
+ *                      description: the id of category for foreinField in course
+ *                      example: 6298eaecc64b24d6ef3f2a8e
+ *                  price:
+ *                      type: string
+ *                      description: the price of course
+ *                      example: 15000
+ *                  discount:
+ *                      type: string
+ *                      description: the discount for course
+ *                      example: 10
+ *                  teacher:
+ *                      type: string
+ *                      description: the teacher of course
+ *                      example: 627fdc85feda1ceaff9d1639
+ *                  type:
+ *                      type: array
+ *                      $ref: '#/components/schemas/Types'
+ *                  image:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          format: binary
+ *                      description: the index picture of course
  */
 
 /**
@@ -135,6 +178,28 @@
  *          responses:
  *              201:
  *                  description: created
+ */ 
+
+/**
+ * @swagger
+ *  /admin/course/edit/{courseID}:
+ *      patch:
+ *          tags: [Course(AdminPanel)]
+ *          summary: create and save course
+ *          parameters: 
+ *              -   in: path
+ *                  name: courseID
+ *                  type: string
+ *                  required: true
+ *          requestBody:
+ *              required: true
+ *              content: 
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/editCourse'
+ *          responses:
+ *              200:
+ *                  description: success
  */ 
 
 /**
