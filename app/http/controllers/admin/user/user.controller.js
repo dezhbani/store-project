@@ -7,15 +7,19 @@ class UserController extends Controllers{
     async searchInUsers(req, res, next){
         try {
             const {search} = req.query;
+            console.log(!!search)
+
             let users, databaseQuery;
-            databaseQuery['$text'] = {$search : search}
+            databaseQuery = {$search : search}
             const mobileRegex = (/^09[0-9]{9}$/)
-            if(search == undefined) users = await userModel.find({});
-            if(mobileRegex.test(search)){
+            if(!search){ 
+                users = await userModel.find({});
+            }else if(mobileRegex.test(search)){
                 users = await userModel.find({mobile: search})
-            } else(
-                users = await userModel.find(databaseQuery)
-            ) 
+                console.log("mobile")
+            }else{
+                users = await userModel.find({$text: databaseQuery})
+            }
             return res.status(httpStatus.OK).json({
                 statusCode:httpStatus.OK,
                 data:{
@@ -31,7 +35,7 @@ class UserController extends Controllers{
         try {
             const userID = req.user._id;
             const data = req.body;
-            const BlackListFields = ["mobile", "otp", "bills", "discount", "roles", "courses"]
+            const BlackListFields = ["mobile", "otp", "bills", "discount", "roles", "courses", "id", "_id"]
             deleteInvalidProperties(data, BlackListFields)
             const profileUpdateResult = await userModel.updateOne({_id: userID}, { $set: data })
             if(!profileUpdateResult.modifiedCount) throw createHttpError.InternalServerError("به روزسانی انجام نشد")
