@@ -5,6 +5,7 @@ const { adminChapterRoutes } = require("./chapter");
 const { adminCourseRoutes } = require("./course");
 const { adminEpisodeRoutes } = require("./episode");
 const { adminProductRoutes } = require("./product");
+const { adminUserRoutes } = require("./user");
 const router = require("express").Router();
 
 /**
@@ -12,6 +13,8 @@ const router = require("express").Router();
  *  tags:
  *      -   name: AdminPanel
  *          description: action of admin (add, remove, edit & any do)
+ *      -   name: User(AdminPanel)
+ *          description: management of all user 
  *      -   name: Course(AdminPanel)
  *          description: all methods and routes aboute category
  *      -   name: Chapter(AdminPanel)
@@ -26,7 +29,8 @@ const router = require("express").Router();
  *          description: all methods and routes aboute category
  */
 
-router.use("/category", adminCategoryRoutes);
+router.use("/user", adminUserRoutes); 
+router.use("/category", adminCategoryRoutes); 
 router.use("/blog", adminBlogRoutes);
 router.use("/product", adminProductRoutes);
 router.use("/course", adminCourseRoutes);

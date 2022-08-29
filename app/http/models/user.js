@@ -1,8 +1,8 @@
 const { default: mongoose } = require("mongoose");
 
-const Schema = new mongoose.Schema({
-    first_name: {type: String},
-    last_name: {type: String},
+const userSchema = new mongoose.Schema({
+    first_name: {type: String, default: "matin"},
+    last_name: {type: String, default: "dezhbani"},
     username: {type: String},
     email: {type: String},
     mobile: {type: String},
@@ -22,7 +22,8 @@ const Schema = new mongoose.Schema({
         virtuals: true
     }
 });
+userSchema.index({first_name: "text", last_name: "text", username: "text", mobile: "text", email: "text"})
 
 module.exports = {
-    userModel: mongoose.model("user", Schema)
+    userModel: mongoose.model("user", userSchema)
 }
