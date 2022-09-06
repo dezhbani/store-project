@@ -44,7 +44,7 @@
  * @swagger
  *  /admin/user/update-profile:
  *      patch:
- *          tags: [Users(AdminPanel)]
+ *          tags: [User(AdminPanel)]
  *          summary: update user detail and profile
  *          requestBody:
  *              required: true
