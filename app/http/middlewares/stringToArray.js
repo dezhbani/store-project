@@ -14,6 +14,10 @@ const stringToArray = (...args) =>{
                 }else if((req.body[field].constructor).toString().toLowerCase().indxOf("array") >= 0){
                     req.body[field] = req.body[field].map(item => item.trim())
                 }
+                if(Array.isArray(req.body[field])){
+                    req.body[field] = req.body[field].map(item => item.trim());
+                    req.body[field] = [... new Set(req.body[field])]
+                }
             }else{
                 req.body[field] = [];
             }

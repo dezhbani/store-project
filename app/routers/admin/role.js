@@ -5,7 +5,7 @@ const router = require("express").Router();
 
 router.post("/add", stringToArray("permission"), RoleController.addRole)
 router.get("/list", RoleController.getAllRole)
-router.patch("/edit/:id", RoleController.editRole)
+router.patch("/edit/:id", stringToArray("permission"), RoleController.editRole)
 router.delete("/delete/:field", RoleController.deleteRole)
 
 module.exports = {

@@ -54,6 +54,9 @@
  *                  title:
  *                      type: string
  *                      description: the title of role
+ *                  description:
+ *                      type: string
+ *                      description: the desc of role
  *                  permission:
  *                      description: the permissionID for role
  *                      type: array
@@ -63,6 +66,9 @@
  *                  title:
  *                      type: string
  *                      description: the title of role
+ *                  description:
+ *                      type: string
+ *                      description: the desc of role
  *                  permission:
  *                      description: the permissionID for role
  *                      type: array

@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { default: mongoose } = require("mongoose");
+const { copyObject, deleteInvalidProperties } = require("../../../../utils/function");
 const { roleModel } = require("../../../models/role");
 const { addRoleSchema } = require("../../../validations/admin/RBAC.schema");
 const { Controllers } = require("../../controllers");
@@ -8,9 +9,9 @@ const { Controllers } = require("../../controllers");
 class RoleController extends Controllers{
     async addRole(req, res, next){
         try {
-            const {title, permission} = await addRoleSchema.validateAsync(req.body);
+            const {title, permission, description} = await addRoleSchema.validateAsync(req.body);
             await this.findRoleByTitle(title);
-            const createRole = await roleModel.create({title, permission});
+            const createRole = await roleModel.create({title, permission, description});
             if(!createRole) throw createHttpError.InternalServerError("نقش ایجاد نشد");
             return res.status(httpStatus.CREATED).json({
                 statusCode: httpStatus.CREATED,
@@ -38,7 +39,20 @@ class RoleController extends Controllers{
     }
     async editRole(req, res, next){
         try {
-            
+            const { id } = req.params;
+            const role = await this.findRoleByIdOrTitle(id);
+            const data = copyObject(req.body);
+            deleteInvalidProperties(data, [])
+            const editResult = await roleModel.updateOne ({_id: role._id}, {
+                $set: data
+            });
+            if(!editResult.modifiedCount) throw createHttpError.InternalServerError("به روزرسانی نقش انجام نشد");
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                data: {
+                    message: "نقش با موفقیت به روزرسانی شد"
+                }
+            })
         } catch (error) {
             next(error)
         }
