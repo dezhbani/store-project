@@ -1,3 +1,5 @@
+const { checkPermission } = require("../../http/middlewares/permission.guard");
+const { PERMISSIONS } = require("../../utils/constant");
 const { adminBlogRoutes } = require("./blog");
 const { adminCategoryRoutes } = require("./category");
 const { adminChapterRoutes } = require("./chapter");
@@ -32,15 +34,15 @@ const router = require("express").Router();
  *          description: all methods and routes aboute category
  */
 
-router.use("/user", adminUserRoutes); 
-router.use("/category", adminCategoryRoutes); 
-router.use("/blog", adminBlogRoutes);
-router.use("/product", adminProductRoutes);
-router.use("/course", adminCourseRoutes);
-router.use("/chapter", adminChapterRoutes);
-router.use("/episode", adminEpisodeRoutes);
-router.use("/permission", adminPermissionRoutes);
-router.use("/role", adminRoleRoutes);
+router.use("/user", checkPermission([PERMISSIONS.USER]), adminUserRoutes); 
+router.use("/category", checkPermission([PERMISSIONS.CATEGORY]), adminCategoryRoutes); 
+router.use("/blog", checkPermission([PERMISSIONS.BLOG]), adminBlogRoutes);
+router.use("/product", checkPermission([PERMISSIONS.PRODUCT]), adminProductRoutes); 
+router.use("/course", checkPermission([PERMISSIONS.COURSE]), adminCourseRoutes);
+router.use("/chapter", checkPermission([PERMISSIONS.CHAPTER]), adminChapterRoutes);
+router.use("/episode", checkPermission([PERMISSIONS.EPISODE]), adminEpisodeRoutes);
+router.use("/permission", checkPermission([PERMISSIONS.ALL]), adminPermissionRoutes);
+router.use("/role", checkPermission([PERMISSIONS.ALL]), adminRoleRoutes);
 
 module.exports = {
     AdminRoutes: router
