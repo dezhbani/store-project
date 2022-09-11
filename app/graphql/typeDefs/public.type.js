@@ -15,8 +15,18 @@ const categoryType = new GraphQLObjectType({
         title : {type : GraphQLString},
     }
 })
-
+const detailsType = new GraphQLObjectType({
+    name: "detailsType",
+    fields: {
+            length: {type: GraphQLInt},
+            weight: {type: GraphQLInt},
+            hight: {type: GraphQLInt},
+            width: {type: GraphQLInt},
+            colors: {type: new GraphQLList(GraphQLString)},
+    }
+})
 module.exports = {
     athorType,
-    categoryType
+    categoryType,
+    detailsType
 }

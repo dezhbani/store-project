@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
     text : {type: String, required: true},
     images : {type: [String], required: true},
     tags : {type: [String], required: true},
-    category : {type: mongoose.Types.ObjectId, required: true},
+    category : {type: mongoose.Types.ObjectId, ref: "category", required: true},
     comments : {type: [CommentSchema], default: []},
     likes : {type: [mongoose.Types.ObjectId], default: []},
     dislikes : {type: [mongoose.Types.ObjectId], default: []},
@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
     count : {type: Number},
     type : {type: String, required: true}, // virtual - phisical
     format : {type: String},
-    supplier : {type: mongoose.Types.ObjectId, required: true},
+    supplier : {type: mongoose.Types.ObjectId, ref: "user", required: true},
     details : {type: Object, default: {
         length: "0",
         weight: "0",
