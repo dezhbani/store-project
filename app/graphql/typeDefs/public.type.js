@@ -9,7 +9,7 @@ const athorType = new GraphQLObjectType({
     }
 })
 const categoryType = new GraphQLObjectType({
-    name: "categoryType",
+    name: "CategoryType",
     fields: {
         _id : {type : GraphQLString},
         title : {type : GraphQLString},
