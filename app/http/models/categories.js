@@ -2,7 +2,7 @@ const { default: mongoose, Types } = require("mongoose");
 
 const Schema = new mongoose.Schema({
     title : {type: String, required: true},
-    parent: {type: mongoose.Types.ObjectId, default: undefined}
+    parent: {type: mongoose.Types.ObjectId, ref: "category", default: undefined}
 }, {
     id: false,
     toJSON:{
@@ -21,5 +21,5 @@ function autoPopulate(next){
 Schema.pre("find", autoPopulate).pre("findOne", autoPopulate);
 
 module.exports = {
-    catergoryModel: mongoose.model("category", Schema)
+    categoryModel: mongoose.model("category", Schema)
 }
