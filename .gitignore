@@ -1,5 +1,6 @@
 /node_modules
 /app/utils/secret_key.js
+/app/routers/instagram.js
 /app/routers/whatsapp.js
 /public
 /.vscode
