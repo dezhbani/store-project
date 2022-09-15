@@ -12,7 +12,7 @@ class CourseController extends Controllers {
     async addCourse(req, res, next) {
         try {
             await createCourseSchema.validateAsync(req.body);
-            const { fileUploadPath, filename, text, short_text, category, title, tags, price, discount } = req.body;
+            const { fileUploadPath, filename, text, short_text, category, title, type, tags, price, discount } = req.body;
             const image = bindImagePath(fileUploadPath, filename)
             const teacher = req.user._id;
             if (Number(price) > 0 && type === "free") throw createHttpError.BadRequest("برای دوره رایگان نمی توان قیمت ثبت کرد");
