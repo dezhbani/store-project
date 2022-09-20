@@ -3,6 +3,7 @@ const { blogResolver } = require("./queries/blog.resolver");
 const { categoryResolver, categoryChildResolver } = require("./queries/category.resolver");
 const { courseResolver } = require("./queries/course.resolver");
 const { productResolver } = require("./queries/product.resolver");
+const { createCommentForBlog, createCommentForCourse, createCommentForProducts } = require("./mutations/comment.resolver");
 
 const rootQuery = new GraphQLObjectType({
     name: "rootQuery",
@@ -11,18 +12,21 @@ const rootQuery = new GraphQLObjectType({
         products: productResolver,
         categories: categoryResolver,
         childOfCategory: categoryChildResolver,
-        courses: courseResolver
+        courses: courseResolver,
+
     }
 }); 
 const rootMutation = new GraphQLObjectType({
     name: "rootMutation",
     fields: {
-        
+        createCommentForBlog,
+        createCommentForCourse,
+        createCommentForProducts
     }
 });
 const graphqlSchema = new GraphQLSchema({
     query: rootQuery,
-    // mutation: rootMutation
+    mutation: rootMutation
 }) 
 
 module.exports = {
