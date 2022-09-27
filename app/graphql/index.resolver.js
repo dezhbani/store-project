@@ -7,6 +7,7 @@ const { getBlogsBookmarks, getProductsBookmarks, getCoursesBookmarks } = require
 const { createCommentForBlog, createCommentForCourse, createCommentForProducts } = require("./mutations/comment.resolver");
 const { likeProduct, likeCourse, likeBlog } = require("./mutations/likes.resolver");
 const { bookmarkProduct, bookmarkCourse, bookmarkBlog } = require("./mutations/bookmarks.resolver");
+const { addProduct, addCourse } = require("./mutations/basket.resolver");
 
 const rootQuery = new GraphQLObjectType({
     name: "rootQuery",
@@ -33,7 +34,9 @@ const rootMutation = new GraphQLObjectType({
         likeBlog,
         bookmarkProduct,
         bookmarkCourse,
-        bookmarkBlog
+        bookmarkBlog,
+        addProduct,
+        addCourse
     }
 });
 const graphqlSchema = new GraphQLSchema({
