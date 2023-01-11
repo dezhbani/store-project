@@ -81,7 +81,7 @@
  *          responses:
  *              200:
  *                  description: success
- *                  content: 
+ *                  content:
  *                      application/json:
  *                          schema:
  *                              $ref: '#/definitions/ListOfPermissions'
