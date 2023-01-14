@@ -9,6 +9,7 @@ const createError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJS = require("swagger-jsdoc");
 const cors = require("cors");
+const expressEjsLayouts = require("express-ejs-layouts");
 
 module.exports = class Application{
     #app = express();
@@ -18,6 +19,7 @@ module.exports = class Application{
         this.#PORT = PORT;
         this.#DB_URL = DB_URL;
         this.configApplication();
+        this.initTemplateEngine()
         // this.initRedis();
         this.connectToDB();
         this.createServer();
@@ -88,6 +90,14 @@ module.exports = class Application{
     }
     initRedis(){
         require("./utils/init-redis")
+    }
+    initTemplateEngine(){
+        this.#app.use(expressEjsLayouts);
+        this.#app.set("view engine", "ejs");
+        this.#app.set("views", "resource/views");
+        this.#app.set("layout extractStyles", true);
+        this.#app.set("layout extractScripts", true);
+        this.#app.set("layout", "./layouts/master");
     }
     createRoutes(){
         this.#app.use(AllRoutes)

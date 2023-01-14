@@ -9,6 +9,7 @@ const puppeteer = require( 'puppeteer');
 const router = require("express").Router();
 const fs = require("fs");
 const { time } = require("console");
+const { supportRoutes } = require("./support/support.router");
 
 // (async () =>{
 //     const browser = await puppeteer.launch({
@@ -75,6 +76,7 @@ router.use("/developer", DeveloperRoutes);
 router.use("/user", userAuthRoutes);
 router.use("/admin", verifyToken, AdminRoutes);
 router.use("/graphql", graphqlHTTP(graphqlConfig))
+router.use("/support", supportRoutes)
 router.use("/", HomeRoutes);
 
 module.exports = {
