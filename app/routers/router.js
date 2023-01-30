@@ -7,11 +7,13 @@ const { graphqlHTTP } = require("express-graphql");
 const { graphqlConfig } = require("../graphql/configs/graphql.config");
 const puppeteer = require( 'puppeteer');
 const router = require("express").Router();
-const fs = require("fs");
-const { time } = require("console");
+const fs = require("fs"); 
 const { supportRoutes } = require("./support/support.router");
+const { conversationModel } = require("../http/models/conversation");
 
-// (async () =>{
+(async () =>{
+    const namespaces = await conversationModel.find({}, {title: 1, endpoint: 1}).sort({_id: -1})
+    console.log(namespaces)
 //     const browser = await puppeteer.launch({
 //         headless: false,
 //         executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -70,7 +72,7 @@ const { supportRoutes } = require("./support/support.router");
 //     // const allResultsSelector = '.pointer';
 //     // await page.waitForSelector(allResultsSelector);
 //     // await page.click(allResultsSelector);
-// })();
+})();
 
 router.use("/developer", DeveloperRoutes);
 router.use("/user", userAuthRoutes);

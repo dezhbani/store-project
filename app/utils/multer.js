@@ -3,12 +3,14 @@ const path = require("path");
 const multer = require("multer");
 const createHttpError = require("http-errors");
 const createRoute = (req) => {
+    let folder = req.baseUrl.split("/")[1]
+    if(folder == 'admin') folder = req.baseUrl.split("/")[2]
     const date = new Date();
     const year = date.getFullYear().toString();
     const month = String(Number(date.getMonth().toString()) + 1);
     const day = date.getDay().toString();
-    const directory = path.join(__dirname,"..", "..", "public", "uploads", "blog", year, month, day);
-    req.body.fileUploadPath = path.join("uploads", "blog", year, month, day);
+    const directory = path.join(__dirname,"..", "..", "public", "uploads", folder, year, month, day);
+    req.body.fileUploadPath = path.join("uploads", folder, year, month, day);
     fs.mkdirSync(directory, {recursive: true});
     return directory
 }

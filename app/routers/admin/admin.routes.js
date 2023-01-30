@@ -14,6 +14,8 @@ const router = require("express").Router();
 /**
  * @swagger
  *  tags:
+ *      -   name : Support
+ *          description : support web
  *      -   name: AdminPanel
  *          description: action of admin (add, remove, edit & any do)
  *      -   name: RBAC(AdminPanel)

@@ -12,8 +12,10 @@ const roomSchema = new mongoose.Schema({
 })
 const conversationSchema = new mongoose.Schema({
     title: {type: String, required:true},
-    endpoints: {type: String, required: true},
-    romms: {type: [roomSchema], default: []}
+    endpoint: {type: String, required: true},
+    rooms: {type: [roomSchema], default: []}
+}, {
+    versionKey: false
 })
 
 module.exports = {

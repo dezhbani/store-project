@@ -2,8 +2,9 @@
 /app/utils/secret_key.js
 /app/routers/instagram.js
 /app/routers/whatsapp.js
-/public
+# /public
 /.vscode
 /.wwebjs_auth
-
-/app.js
+# /app.js
+/dump.rdb
+/%userprofile%

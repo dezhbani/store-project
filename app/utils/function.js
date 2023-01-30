@@ -83,7 +83,7 @@ function setDetails(body){
         weight: 0,
         length: 0
     }
-    if(colors.length > 0) details.colors = colors;
+    if(colors?.length > 0) details.colors = colors;
     if(type === "virtual" && width === '' && height === '' && weight === ''&& length === ''){
         details = details 
     }else if(type === "phisical" &&  width !== '' && height !== '' && weight !== ''&& length !== '' ){

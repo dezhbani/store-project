@@ -1,0 +1,11 @@
+{
+    "disks": [
+      {
+        "name": "delta-disk",
+        "mountTo": "./public"
+      }
+    ],
+    "node":{
+        "version":"18"
+    }
+  }
