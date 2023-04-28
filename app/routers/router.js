@@ -10,15 +10,19 @@ const router = require("express").Router();
 const fs = require("fs"); 
 const { supportRoutes } = require("./support/support.router");
 const { conversationModel } = require("../http/models/conversation");
+const { watsapp } = require("./whatsapp");
+const path = require("path");
 
-(async () =>{
-    const namespaces = await conversationModel.find({}, {title: 1, endpoint: 1}).sort({_id: -1})
-    console.log(namespaces)
+// (async () =>{
+//     // watsapp()
+//     // const namespaces = await conversationModel.find({}, {title: 1, endpoint: 1}).sort({_id: -1})
+//     // console.log(namespaces)
 //     const browser = await puppeteer.launch({
 //         headless: false,
 //         executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
 //         // ignoreHTTPSErrors: true,
 //         // args: [--window-size=1920,1080],
+//         timeout: 60000,
 //         defaultViewport:{
 //             width: 1920,
 //             height:1080
@@ -26,6 +30,50 @@ const { conversationModel } = require("../http/models/conversation");
 //         // userDataDir: '%userprofile%\\AppData\\Local\\Google\\Chrome\\User Data\\AllowCookies'
 //       });
 //     const page = await browser.newPage();
+//     await page.goto("https://web.telegram.org/z/#5803093467",{timeout: 60000})
+//     await page.waitForSelector('.text-content', { visible: true, timeout: 120000 });
+
+//   // Retrieve message data
+//   const messages = await page.evaluate(() => {
+//     const messageElements = document.querySelectorAll('.message-list-item');
+//     // console.log(messageElements)
+//     const messages = [];
+//     // return Object.values(messageElements)
+//     messageElements.forEach(element => {
+//         const message = {}
+    
+//         const textElement = element.querySelector('.text-content');
+//         if (textElement) {
+//           message.text = "  "+textElement.textContent;
+//         }
+//         messages.push(message)
+//     })
+//     // console.log(messageElements.length)
+
+//     return messages;
+//   });
+//   console.log(messages);
+//   let joinedMessage= '';
+//   messages.map(message => {
+//     joinedMessage = path.join(joinedMessage, "                                 ", `${message.text}`)
+    
+//   })
+//   console.log(joinedMessage.split("#").map(item => item.trim()))
+//      fs.writeFile(`./${new Date().getTime()}.txt`, joinedMessage, function(err) {
+//             if(err) {
+//                 return console.log(err);
+//             }
+//                 console.log("The file was saved!");
+//             });
+    // await page.waitForTimeout(60000)
+    // await page.waitForSelector('#2312');
+    // const element = await page.waitForSelector('.text-content');
+    // const fullTitle = await element.evaluate(el => {
+    //     console.log(el)
+    //     console.log(el.textContent)
+    //     el.textContent
+    // })
+    // console.log(fullTitle)
   
 //     // await page.goto('https://www.digikala.com/product/dkp-8514483/%D8%B4%D8%A7%D8%B1%DA%98%D8%B1-%D9%87%D9%85%D8%B1%D8%A7%D9%87-%D9%84%DB%8C%D8%AA%D9%88-%D9%85%D8%AF%D9%84-lp-22-%D8%B8%D8%B1%D9%81%DB%8C%D8%AA-20000-%D9%85%DB%8C%D9%84%DB%8C-%D8%A2%D9%85%D9%BE%D8%B1-%D8%B3%D8%A7%D8%B9%D8%AA/');
 //     // const element = await page.waitForSelector('div[data-cro-id=pdp-album-open]');
@@ -72,7 +120,7 @@ const { conversationModel } = require("../http/models/conversation");
 //     // const allResultsSelector = '.pointer';
 //     // await page.waitForSelector(allResultsSelector);
 //     // await page.click(allResultsSelector);
-})();
+// })();
 
 router.use("/developer", DeveloperRoutes);
 router.use("/user", userAuthRoutes);

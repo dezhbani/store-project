@@ -70,7 +70,6 @@ module.exports = class Application{
     }
     createServer(){
         const server = http.createServer(this.#app)
-        console.log(server)
         const io = initSocket(server);
         socketHandler(io)
         server.listen(this.#PORT, () => {

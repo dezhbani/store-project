@@ -6,8 +6,8 @@ module.exports = class namespaceSocket{
         this.#io = io
     }
     initConnection(){
-        // console.log(this.#io);
         this.#io.on("connection", async socket => {
+            console.log("this.#io");
             const namespaces = await conversationModel.find({}, {title: 1, endpoint: 1}).sort({_id: -1});
             socket.emit("namespacesList", namespaces)
         })

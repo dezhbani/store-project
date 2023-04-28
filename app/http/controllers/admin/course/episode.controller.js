@@ -65,7 +65,7 @@ class EpisodeController extends Controllers {
             const { episodeID } = req.params;
             const episode = await this.getOneEpisode(episodeID)
             const { filename, fileUploadPath } = req.body;
-            let blackList = ["_id"];
+            let blackList = ["_id"];                                                                                                                                                                                                                                                                                                                                                            
             if (filename && fileUploadPath) {
                 const fileAddress = path.join(fileUploadPath, filename);
                 req.body.videoAddress = fileAddress.replace(/\\/g, "/");
