@@ -21,7 +21,8 @@ class userAuthControllers extends Controllers {
                     statusCode: 200,
                     data: {
                         message: "کد تایید ارسال شد",
-                        mobile
+                        mobile,
+                        code
                     }
                 }
             });
