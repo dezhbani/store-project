@@ -9,9 +9,6 @@ const createError = require("http-errors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJS = require("swagger-jsdoc");
 const cors = require("cors");
-const expressEjsLayouts = require("express-ejs-layouts");
-const { initSocket } = require("./utils/init-socket");
-const { socketHandler } = require("./socket.io");
 
 module.exports = class Application{
     #app = express();
@@ -70,8 +67,6 @@ module.exports = class Application{
     }
     createServer(){
         const server = http.createServer(this.#app)
-        const io = initSocket(server);
-        socketHandler(io)
         server.listen(this.#PORT, () => {
             console.log(`run => http://localhost:${this.#PORT}/api-doc`);
         })
@@ -95,14 +90,6 @@ module.exports = class Application{
     }
     initRedis(){
         require("./utils/init-redis")
-    }
-    initTemplateEngine(){
-        this.#app.use(expressEjsLayouts);
-        this.#app.set("view engine", "ejs");
-        this.#app.set("views", "resource/views");
-        this.#app.set("layout extractStyles", true);
-        this.#app.set("layout extractScripts", true);
-        this.#app.set("layout", "./layouts/master");
     }
     createRoutes(){
         this.#app.use(AllRoutes)
