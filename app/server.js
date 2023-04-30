@@ -44,7 +44,7 @@ module.exports = class Application{
                         },
                         servers:[
                             {
-                                url: "https://socketio-chat.iran.liara.run"
+                                url: `http://localhost:2000`
                             }
                         ],
                         components: {
