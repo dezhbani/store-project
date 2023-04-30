@@ -18,7 +18,6 @@ module.exports = class Application{
         this.#PORT = PORT;
         this.#DB_URL = DB_URL;
         this.configApplication();
-        this.initTemplateEngine()
         // this.initRedis();
         this.connectToDB();
         this.createServer();
